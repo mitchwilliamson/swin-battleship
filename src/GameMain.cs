@@ -8,13 +8,18 @@ namespace Battleship
         public static void Main()
         {
             SwinGame.OpenGraphicsWindow("Battleship", 800, 600);
-            SwinGame.ShowSwinGameSplashScreen();
+
+            GameResources.Load();
+            SwinGame.PlayMusic("Background");
+
+            GameController gameController = new GameController();
 
             //Run the game loop
             while (false == SwinGame.WindowCloseRequested())
             {
                 //Fetch the next batch of UI interaction
                 SwinGame.ProcessEvents();
+
 
                 //Clear the screen and draw the framerate
                 SwinGame.ClearScreen(Color.White);

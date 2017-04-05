@@ -7,9 +7,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{871B5A90-103A-46A5-BBB9-07C02B9851D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CardGames</RootNamespace>
+    <RootNamespace>Battleship</RootNamespace>
     <ApplicationIcon>Resources\SwinGame.ico</ApplicationIcon>
-    <AssemblyName>SnapGame</AssemblyName>
+    <AssemblyName>Battleship</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
@@ -60,7 +60,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
   <ItemGroup>
+    <Compile Include="src\GameController.cs" />
     <Compile Include="src\GameMain.cs" />
+    <Compile Include="src\GameResources.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SwinGame">
