@@ -21,7 +21,12 @@
     <PlatformTarget>x86</PlatformTarget>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe &quot;${ProjectDir}/${ProjectName}.csproj&quot; /target:CopyFiles /p:Configuration=Debug-Windows;Platform=x86;OutDir=&quot;${TargetDir}&quot;" workingdir="${ProjectDir}" externalConsole="True" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe "${ProjectDir}/${ProjectName}.csproj" /target:CopyFiles /p:Configuration=Debug-Windows;Platform=x86;OutDir="${TargetDir}"</command>
+          <workingdir>${ProjectDir}</workingdir>
+          <externalConsole>True</externalConsole>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -37,7 +42,10 @@
     <PlatformTarget>x86</PlatformTarget>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xbuild ${ProjectName}.csproj /target:CopyFiles" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>xbuild ${ProjectName}.csproj /target:CopyFiles</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -53,7 +61,10 @@
     <PlatformTarget>x86</PlatformTarget>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xbuild ${ProjectName}.csproj /target:CopyFiles" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>xbuild ${ProjectName}.csproj /target:CopyFiles</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -63,6 +74,16 @@
     <Compile Include="src\GameController.cs" />
     <Compile Include="src\GameMain.cs" />
     <Compile Include="src\GameResources.cs" />
+    <Compile Include="src\Models\AttackResult.cs" />
+    <Compile Include="src\Models\Direction.cs" />
+    <Compile Include="src\Models\ISeaGrid.cs" />
+    <Compile Include="src\Models\Player.cs" />
+    <Compile Include="src\Models\ResultOfAttack.cs" />
+    <Compile Include="src\Models\SeaGrid.cs" />
+    <Compile Include="src\Models\Ship.cs" />
+    <Compile Include="src\Models\ShipName.cs" />
+    <Compile Include="src\Models\Tile.cs" />
+    <Compile Include="src\Models\TileView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SwinGame">
