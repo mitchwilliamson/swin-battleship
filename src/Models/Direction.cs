@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 /// </summary>
 namespace Battleship.Models
 {
-    enum Direction
+    public enum Direction
     {
         /// <summary>
         /// The ship is oriented left/right

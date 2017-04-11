@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 /// </summary>
 namespace Battleship.Models
 {
-    enum TileView
+    public enum TileView
     {
         /// <summary>
         /// The viewer can see sea

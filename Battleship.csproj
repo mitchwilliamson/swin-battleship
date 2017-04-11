@@ -74,12 +74,17 @@
     <Compile Include="src\GameController.cs" />
     <Compile Include="src\GameMain.cs" />
     <Compile Include="src\GameResources.cs" />
+    <Compile Include="src\GameState.cs" />
+    <Compile Include="src\Models\AIOption.cs" />
+    <Compile Include="src\Models\AIPlayer.cs" />
     <Compile Include="src\Models\AttackResult.cs" />
+    <Compile Include="src\Models\BattleshipsGame.cs" />
     <Compile Include="src\Models\Direction.cs" />
     <Compile Include="src\Models\ISeaGrid.cs" />
     <Compile Include="src\Models\Player.cs" />
     <Compile Include="src\Models\ResultOfAttack.cs" />
     <Compile Include="src\Models\SeaGrid.cs" />
+    <Compile Include="src\Models\SeaGridAdapter.cs" />
     <Compile Include="src\Models\Ship.cs" />
     <Compile Include="src\Models\ShipName.cs" />
     <Compile Include="src\Models\Tile.cs" />

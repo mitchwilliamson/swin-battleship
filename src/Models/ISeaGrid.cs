@@ -2,11 +2,8 @@
 
 namespace Battleship.Models
 {
-    interface ISeaGrid
+    public interface ISeaGrid
     {
-        int Width();
-        int Height();
-
         /// <summary>
         /// Indicates that the grid has changed.
         /// </summary>

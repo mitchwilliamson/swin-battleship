@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Battleship.Models
 {
-    enum ShipName
+    public enum ShipName
     {
         None = 0,
         Tug = 1,

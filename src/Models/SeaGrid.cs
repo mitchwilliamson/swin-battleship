@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Battleship.Models
 {
-    class SeaGrid : ISeaGrid
+    public class SeaGrid : ISeaGrid
     {
         private const int _WIDTH = 10;
         private const int _HEIGHT = 10;
@@ -12,7 +12,7 @@ namespace Battleship.Models
         private Dictionary<ShipName, Ship> _ships;
         private int _shipsKilled = 0;
 
-        // public event EventHandler ISeaGrid.Changed; - to be fixed
+        public event EventHandler<EventArgs> Changed;
 
         /// <summary>
         /// The width of the sea grid.
@@ -98,7 +98,47 @@ namespace Battleship.Models
         /// <param name="newShip">the ship</param>
         private void AddShip(int row, int col, Direction direction, Ship newShip)
         {
-            // TODO
+            try
+            {
+                int size = newShip.Size;
+                int currentRow = row;
+                int currentCol = col;
+                int dRow, dCol;
+
+                if (direction == Direction.LeftRight)
+                {
+                    dRow = 0;
+                    dCol = 1;
+                }
+                else
+                {
+                    dRow = 1;
+                    dCol = 0;
+                }
+
+                for (int i = 0; i < size - 1; i++)
+                {
+                    if(currentRow < 0 || currentRow >= Width || currentCol < 0 || currentCol >= Height)
+                    {
+                        throw new InvalidOperationException("Ship can't fit on the board!");
+                    }
+
+                    _gameTiles[currentRow, currentCol].Ship = newShip;
+
+                    currentCol += dCol;
+                    currentCol += dRow;
+                }
+            }
+            catch (Exception ex)
+            {
+                newShip.Remove();
+                throw new ApplicationException(ex.Message);
+            }
+            finally
+            {
+                EventHandler<EventArgs> handler = Changed;
+                handler(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -110,7 +150,34 @@ namespace Battleship.Models
         /// <returns>An attackresult (hit, miss, sunk, shotalready)</returns>
         public AttackResult HitTile(int row, int col)
         {
-            // TODO
+            try
+            {
+                if (_gameTiles[row, col].Shot)
+                {
+                    return new AttackResult(ResultOfAttack.ShotAlready, "have already attacked [" + col.ToString() + "," + row.ToString() + "]!", row, col);
+                }
+
+                _gameTiles[row, col].Shoot();
+
+                if (_gameTiles[row, col].Ship == null)
+                {
+                    return new AttackResult(ResultOfAttack.Miss, "missed", row, col);
+                }
+
+                if (_gameTiles[row, col].Ship.IsDestroyed)
+                {
+                    _gameTiles[row, col].Shot = true;
+                    _shipsKilled += 1;
+                    return new AttackResult(ResultOfAttack.Destroyed, _gameTiles[row, col].Ship, "destroyed the enemy's", row, col);
+                }
+
+                return new AttackResult(ResultOfAttack.Hit, "hit something!", row, col);
+            }
+            finally
+            {
+                EventHandler<EventArgs> handler = Changed;
+                handler(this, EventArgs.Empty);
+            }
         }
     }
 }

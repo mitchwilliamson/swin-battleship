@@ -10,7 +10,7 @@ namespace Battleship.Models
     /// Tile knows its location on the grid, if it is a ship and if it has been 
     /// shot before
     /// </summary>
-    class Tile
+    public class Tile
     {
         private int _rowValue;
         private int _columnValue;
