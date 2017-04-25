@@ -9,7 +9,9 @@ using SwinGameSDK;
 
 public static class GameResources
 {
-
+	/// <summary>
+	/// Loads the fonts.
+	/// </summary>
 	private static void LoadFonts()
 	{
 		NewFont("ArialLarge", "arial.ttf", 80);
@@ -18,6 +20,9 @@ public static class GameResources
 		NewFont("Menu", "ffaccess.ttf", 8);
 	}
 
+	/// <summary>
+	/// Loads the images.
+	/// </summary>
 	private static void LoadImages()
 	{
 		//Backgrounds
@@ -45,6 +50,9 @@ public static class GameResources
 
 	}
 
+	/// <summary>
+	/// Loads the sounds.
+	/// </summary>
 	private static void LoadSounds()
 	{
 		NewSound("Error", "error.wav");
@@ -56,6 +64,9 @@ public static class GameResources
 		NewSound("Lose", "lose.wav");
 	}
 
+	/// <summary>
+	/// Loads the music.
+	/// </summary>
 	private static void LoadMusic()
 	{
 		NewMusic("Background", "horrordrone.mp3");

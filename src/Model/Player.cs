@@ -40,6 +40,10 @@ public class Player : IEnumerable<Ship>
 		set { _enemyGrid = value; }
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="T:Player"/> class.
+	/// </summary>
+	/// <param name="controller">The battleships game.</param>
 	public Player(BattleShipsGame controller)
 	{
 		_game = controller;
@@ -78,7 +82,7 @@ public class Player : IEnumerable<Ship>
 	}
 
 	public bool IsDestroyed {
-//Check if all ships are destroyed... -1 for the none ship
+	 //Check if all ships are destroyed... -1 for the none ship
 		get { return _playerGrid.ShipsKilled == Enum.GetValues(typeof(ShipName)).Length - 1; }
 	}
 
@@ -198,6 +202,9 @@ public class Player : IEnumerable<Ship>
 		return result;
 	}
 
+	/// <summary>
+	/// Randomizes the deployment.
+	/// </summary>
 	public virtual void RandomizeDeployment()
 	{
 		bool placementSuccessful = false;
@@ -235,10 +242,3 @@ public class Player : IEnumerable<Ship>
 		}
 	}
 }
-
-//=======================================================
-//Service provided by Telerik (www.telerik.com)
-//Conversion powered by NRefactory.
-//Twitter: @telerik
-//Facebook: facebook.com/telerik
-//=======================================================
