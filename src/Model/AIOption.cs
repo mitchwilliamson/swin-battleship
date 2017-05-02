@@ -13,17 +13,17 @@ public enum AIOption
 	/// <summary>
 	/// Easy, total random shooting
 	/// </summary>
-	Easy,
+	AIPlayer,
 
 	/// <summary>
 	/// Medium, marks squares around hits
 	/// </summary>
-	Medium,
+	AIMediumPlayer,
 
 	/// <summary>
 	/// As medium, but removes shots once it misses
 	/// </summary>
-	Hard
+	AIHardPlayer,
 }
 
 //=======================================================
