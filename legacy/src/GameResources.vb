@@ -1,265 +1,235 @@
-Imports SwinGameSDK
-Imports System.Collections.Generic
+''' <summary>
+''' This includes a number of utility methods for
+''' drawing and interacting with the Mouse.
+''' </summary>
+Module UtilityFunctions
+    Public Const FIELD_TOP As Integer = 122
+    Public Const FIELD_LEFT As Integer = 349
+    Public Const FIELD_WIDTH As Integer = 418
+    Public Const FIELD_HEIGHT As Integer = 418
 
-Public Module GameResources
+    Public Const MESSAGE_TOP As Integer = 548
 
-    Private Sub LoadFonts()
-        NewFont("ArialLarge", "arial.ttf", 80)
-        NewFont("Courier", "cour.ttf", 14)
-        NewFont("CourierSmall", "cour.ttf", 8)
-        NewFont("Menu", "ffaccess.ttf", 8)
-    End Sub
+    Public Const CELL_WIDTH As Integer = 40
+    Public Const CELL_HEIGHT As Integer = 40
+    Public Const CELL_GAP As Integer = 2
 
-    Private Sub LoadImages()
-        'Backgrounds
-        NewImage("Menu", "main_page.jpg")
-        NewImage("Discovery", "discover.jpg")
-        NewImage("Deploy", "deploy.jpg")
+    Public Const SHIP_GAP As Integer = 3
 
-        'Deployment
-        NewImage("LeftRightButton", "deploy_dir_button_horiz.png")
-        NewImage("UpDownButton", "deploy_dir_button_vert.png")
-        NewImage("SelectedShip", "deploy_button_hl.png")
-        NewImage("PlayButton", "deploy_play_button.png")
-        NewImage("RandomButton", "deploy_randomize_button.png")
+    Private ReadOnly SMALL_SEA As Color = SwinGame.RGBAColor(6, 60, 94, 255)
+    Private ReadOnly SMALL_SHIP As Color = Color.Gray
+    Private ReadOnly SMALL_MISS As Color = SwinGame.RGBAColor(1, 147, 220, 255)
+    Private ReadOnly SMALL_HIT As Color = SwinGame.RGBAColor(169, 24, 37, 255)
 
-        'Ships
-        Dim i as Integer
-For i  = 1 To 5
-            NewImage("ShipLR" & i, "ship_deploy_horiz_" & i & ".png")
-            NewImage("ShipUD" & i, "ship_deploy_vert_" & i & ".png")
-        Next
+    Private ReadOnly LARGE_SEA As Color = SwinGame.RGBAColor(6, 60, 94, 255)
+    Private ReadOnly LARGE_SHIP As Color = Color.Gray
+    Private ReadOnly LARGE_MISS As Color = SwinGame.RGBAColor(1, 147, 220, 255)
+    Private ReadOnly LARGE_HIT As Color = SwinGame.RGBAColor(252, 2, 3, 255)
 
-        'Explosions
-        NewImage("Explosion", "explosion.png")
-        NewImage("Splash", "splash.png")
+    Private ReadOnly OUTLINE_COLOR As Color = SwinGame.RGBAColor(5, 55, 88, 255)
+    Private ReadOnly SHIP_FILL_COLOR As Color = Color.Gray
+    Private ReadOnly SHIP_OUTLINE_COLOR As Color = Color.White
+    Private ReadOnly MESSAGE_COLOR As Color = SwinGame.RGBAColor(2, 167, 252, 255)
 
-    End Sub
-
-    Private Sub LoadSounds()
-        NewSound("Error", "error.wav")
-        NewSound("Hit", "hit.wav")
-        NewSound("Sink", "sink.wav")
-        NewSound("Siren", "siren.wav")
-        NewSound("Miss", "watershot.wav")
-        NewSound("Winner", "winner.wav")
-        NewSound("Lose", "lose.wav")
-    End Sub
-
-    Private Sub LoadMusic()
-        NewMusic("Background", "horrordrone.mp3")
-    End Sub
+    Public Const ANIMATION_CELLS As Integer = 7
+    Public Const FRAMES_PER_CELL As Integer = 8
 
     ''' <summary>
-    ''' Gets a Font Loaded in the Resources
+    ''' Determines if the mouse is in a given rectangle.
     ''' </summary>
-    ''' <param name="font">Name of Font</param>
-    ''' <returns>The Font Loaded with this Name</returns>
+    ''' <param name="x">the x location to check</param>
+    ''' <param name="y">the y location to check</param>
+    ''' <param name="w">the width to check</param>
+    ''' <param name="h">the height to check</param>
+    ''' <returns>true if the mouse is in the area checked</returns>
+    Public Function IsMouseInRectangle(ByVal x As Integer, ByVal y As Integer, ByVal w As Integer, ByVal h As Integer) As Boolean
+        Dim mouse As Point2D
+        Dim result As Boolean = False
 
-    Public Function GameFont(ByVal font As String) As Font
-        Return _Fonts(font)
+        mouse = SwinGame.MousePosition()
+
+        'if the mouse is inline with the button horizontally
+        If mouse.X >= x And mouse.X <= x + w Then
+            'Check vertical position
+            If mouse.Y >= y And mouse.Y <= y + h Then
+                result = True
+            End If
+        End If
+
+        Return result
     End Function
 
     ''' <summary>
-    ''' Gets an Image loaded in the Resources
+    ''' Draws a large field using the grid and the indicated player's ships.
     ''' </summary>
-    ''' <param name="image">Name of image</param>
-    ''' <returns>The image loaded with this name</returns>
-
-    Public Function GameImage(ByVal image As String) As Bitmap
-        Return _Images(image)
-    End Function
+    ''' <param name="grid">the grid to draw</param>
+    ''' <param name="thePlayer">the players ships to show</param>
+    ''' <param name="showShips">indicates if the ships should be shown</param>
+    Public Sub DrawField(ByVal grid As ISeaGrid, ByVal thePlayer As Player, ByVal showShips As Boolean)
+        DrawCustomField(grid, thePlayer, False, showShips, FIELD_LEFT, FIELD_TOP, FIELD_WIDTH, FIELD_HEIGHT, CELL_WIDTH, CELL_HEIGHT, CELL_GAP)
+    End Sub
 
     ''' <summary>
-    ''' Gets an sound loaded in the Resources
+    ''' Draws a small field, showing the attacks made and the locations of the player's ships
     ''' </summary>
-    ''' <param name="sound">Name of sound</param>
-    ''' <returns>The sound with this name</returns>
+    ''' <param name="grid">the grid to show</param>
+    ''' <param name="thePlayer">the player to show the ships of</param>
+    Public Sub DrawSmallField(ByVal grid As ISeaGrid, ByVal thePlayer As Player)
+        Const SMALL_FIELD_LEFT As Integer = 39, SMALL_FIELD_TOP As Integer = 373
+        Const SMALL_FIELD_WIDTH As Integer = 166, SMALL_FIELD_HEIGHT As Integer = 166
+        Const SMALL_FIELD_CELL_WIDTH As Integer = 13, SMALL_FIELD_CELL_HEIGHT As Integer = 13
+        Const SMALL_FIELD_CELL_GAP As Integer = 4
 
-    Public Function GameSound(ByVal sound As String) As SoundEffect
-        Return _Sounds(sound)
-    End Function
+        DrawCustomField(grid, thePlayer, True, True, SMALL_FIELD_LEFT, SMALL_FIELD_TOP, SMALL_FIELD_WIDTH, SMALL_FIELD_HEIGHT, SMALL_FIELD_CELL_WIDTH, SMALL_FIELD_CELL_HEIGHT, SMALL_FIELD_CELL_GAP)
+    End Sub
 
     ''' <summary>
-    ''' Gets the music loaded in the Resources
+    ''' Draws the player's grid and ships.
     ''' </summary>
-    ''' <param name="music">Name of music</param>
-    ''' <returns>The music with this name</returns>
+    ''' <param name="grid">the grid to show</param>
+    ''' <param name="thePlayer">the player to show the ships of</param>
+    ''' <param name="small">true if the small grid is shown</param>
+    ''' <param name="showShips">true if ships are to be shown</param>
+    ''' <param name="left">the left side of the grid</param>
+    ''' <param name="top">the top of the grid</param>
+    ''' <param name="width">the width of the grid</param>
+    ''' <param name="height">the height of the grid</param>
+    ''' <param name="cellWidth">the width of each cell</param>
+    ''' <param name="cellHeight">the height of each cell</param>
+    ''' <param name="cellGap">the gap between the cells</param>
+    Private Sub DrawCustomField(ByVal grid As ISeaGrid, ByVal thePlayer As Player, ByVal small As Boolean, ByVal showShips As Boolean, ByVal left As Integer, ByVal top As Integer, ByVal width As Integer, ByVal height As Integer, ByVal cellWidth As Integer, ByVal cellHeight As Integer, ByVal cellGap As Integer)
+        'SwinGame.FillRectangle(Color.Blue, left, top, width, height)
 
-    Public Function GameMusic(ByVal music As String) As Music
-        Return _Music(music)
-    End Function
+        Dim rowTop As Integer
+        Dim colLeft As Integer
 
-    Private _Images As New Dictionary(Of String, Bitmap)
-    Private _Fonts As New Dictionary(Of String, Font)
-    Private _Sounds As New Dictionary(Of String, SoundEffect)
-    Private _Music As New Dictionary(Of String, Music)
+        'Draw the grid
+        For row As Integer = 0 To 9
+            rowTop = top + (cellGap + cellHeight) * row
 
-    Private _Background As Bitmap
-    Private _Animation As Bitmap
-    Private _LoaderFull As Bitmap
-    Private _LoaderEmpty As Bitmap
-    Private _LoadingFont As Font
-    Private _StartSound As SoundEffect
+            For col As Integer = 0 To 9
+                colLeft = left + (cellGap + cellWidth) * col
+
+                Dim fillColor As Color
+                Dim draw As Boolean
+
+                draw = True
+
+                Select Case grid.Item(row, col)
+                    Case TileView.Ship
+                        draw = False
+                        'If small Then fillColor = _SMALL_SHIP Else fillColor = _LARGE_SHIP
+                    Case TileView.Miss
+                        If small Then fillColor = SMALL_MISS Else fillColor = LARGE_MISS
+                    Case TileView.Hit
+                        If small Then fillColor = SMALL_HIT Else fillColor = LARGE_HIT
+                    Case TileView.Sea, TileView.Ship
+                        If small Then fillColor = SMALL_SEA Else draw = False
+                End Select
+
+                If draw Then
+                    SwinGame.FillRectangle(fillColor, colLeft, rowTop, cellWidth, cellHeight)
+                    If Not small Then
+                        SwinGame.DrawRectangle(OUTLINE_COLOR, colLeft, rowTop, cellWidth, cellHeight)
+                    End If
+                End If
+            Next
+        Next
+
+        If Not showShips Then
+            Exit Sub
+        End If
+
+        Dim shipHeight, shipWidth As Integer
+        Dim shipName As String
+
+        'Draw the ships
+        For Each s As Ship In thePlayer
+            If s Is Nothing OrElse Not s.IsDeployed Then Continue For
+            rowTop = top + (cellGap + cellHeight) * s.Row + SHIP_GAP
+            colLeft = left + (cellGap + cellWidth) * s.Column + SHIP_GAP
+
+            If s.Direction = Direction.LeftRight Then
+                shipName = "ShipLR" & s.Size
+                shipHeight = cellHeight - (SHIP_GAP * 2)
+                shipWidth = (cellWidth + cellGap) * s.Size - (SHIP_GAP * 2) - cellGap
+            Else
+                'Up down
+                shipName = "ShipUD" & s.Size
+                shipHeight = (cellHeight + cellGap) * s.Size - (SHIP_GAP * 2) - cellGap
+                shipWidth = cellWidth - (SHIP_GAP * 2)
+            End If
+
+            If Not small Then
+                SwinGame.DrawBitmap(GameImage(shipName), colLeft, rowTop)
+            Else
+                SwinGame.FillRectangle(SHIP_FILL_COLOR, colLeft, rowTop, shipWidth, shipHeight)
+                SwinGame.DrawRectangle(SHIP_OUTLINE_COLOR, colLeft, rowTop, shipWidth, shipHeight)
+            End If
+        Next
+    End Sub
+
+    Private _message As String
 
     ''' <summary>
-    ''' The Resources Class stores all of the Games Media Resources, such as Images, Fonts
-    ''' Sounds, Music.
+    ''' The message to display
     ''' </summary>
+    ''' <value>The message to display</value>
+    ''' <returns>The message to display</returns>
+    Public Property Message() As String
+        Get
+            Return _message
+        End Get
+        Set(ByVal value As String)
+            _message = value
+        End Set
+    End Property
 
-    Public Sub LoadResources()
-        Dim width, height As Integer
-
-        width = SwinGame.ScreenWidth()
-        height = SwinGame.ScreenHeight()
-
-        SwinGame.ChangeScreenSize(800, 600)
-
-        ShowLoadingScreen()
-
-        ShowMessage("Loading fonts...", 0)
-        LoadFonts()
-        SwinGame.Delay(100)
-
-        ShowMessage("Loading images...", 1)
-        LoadImages()
-        SwinGame.Delay(100)
-
-        ShowMessage("Loading sounds...", 2)
-        LoadSounds()
-        SwinGame.Delay(100)
-
-        ShowMessage("Loading music...", 3)
-        LoadMusic()
-        SwinGame.Delay(100)
-
-        SwinGame.Delay(100)
-        ShowMessage("Game loaded...", 5)
-        SwinGame.Delay(100)
-        EndLoadingScreen(width, height)
+    ''' <summary>
+    ''' Draws the message to the screen
+    ''' </summary>
+    Public Sub DrawMessage()
+        SwinGame.DrawText(Message, MESSAGE_COLOR, GameFont("Courier"), FIELD_LEFT, MESSAGE_TOP)
     End Sub
 
-    Private Sub ShowLoadingScreen()
-        _Background = SwinGame.LoadBitmap(SwinGame.PathToResource("SplashBack.png", ResourceKind.BitmapResource))
-        SwinGame.DrawBitmap(_Background, 0, 0)
-        SwinGame.RefreshScreen()
-        SwinGame.ProcessEvents()
+    ''' <summary>
+    ''' Draws the background for the current state of the game
+    ''' </summary>
+    Public Sub DrawBackground()
 
-        _Animation = SwinGame.LoadBitmap(SwinGame.PathToResource("SwinGameAni.jpg", ResourceKind.BitmapResource))
-        _LoadingFont = SwinGame.LoadFont(SwinGame.PathToResource("arial.ttf", ResourceKind.FontResource), 12)
-        _StartSound = Audio.LoadSoundEffect(SwinGame.PathToResource("SwinGameStart.ogg", ResourceKind.SoundResource))
+        Select Case CurrentState
+            Case GameState.ViewingMainMenu, GameState.ViewingGameMenu, GameState.AlteringSettings, GameState.ViewingHighScores
+                SwinGame.DrawBitmap(GameImage("Menu"), 0, 0)
+            Case GameState.Discovering, GameState.EndingGame
+                SwinGame.DrawBitmap(GameImage("Discovery"), 0, 0)
+            Case GameState.Deploying
+                SwinGame.DrawBitmap(GameImage("Deploy"), 0, 0)
+            Case Else
+                SwinGame.ClearScreen()
+        End Select
 
-		_LoaderFull = SwinGame.LoadBitmap(SwinGame.PathToResource("loader_full.png", ResourceKind.BitmapResource))
-		_LoaderEmpty = SwinGame.LoadBitmap(SwinGame.PathToResource("loader_empty.png", ResourceKind.BitmapResource))
-
-        PlaySwinGameIntro()
+        SwinGame.DrawFramerate(675, 585, GameFont("CourierSmall"))
     End Sub
 
-    Private Sub PlaySwinGameIntro()
-        Const ANI_X As Integer = 143, ANI_Y As Integer = 134, ANI_W As Integer = 546, ANI_H As Integer = 327, ANI_V_CELL_COUNT As Integer = 6, ANI_CELL_COUNT As Integer = 11
-
-        Audio.PlaySoundEffect(_StartSound)
-        SwinGame.Delay(200)
-
-        Dim i As Integer
-        For i = 0 To ANI_CELL_COUNT - 1
-	        SwinGame.DrawBitmap(_Background, 0, 0)
-	        SwinGame.DrawBitmapPart(_Animation, (i \ ANI_V_CELL_COUNT) * ANI_W, (i mod ANI_V_CELL_COUNT) * ANI_H, ANI_W, ANI_H, ANI_X, ANI_Y)
-	        SwinGame.Delay(20)
-            SwinGame.RefreshScreen()
-            SwinGame.ProcessEvents()
-        Next i
-
-        SwinGame.Delay(1500)
-
+    Public Sub AddExplosion(ByVal row As Integer, ByVal col As Integer)
+        AddAnimation(row, col, "Splash")
     End Sub
 
-    Private Sub ShowMessage(ByVal message As String, ByVal number As Integer)
-        Const TX As Integer = 310, TY As Integer = 493, TW As Integer = 200, TH As Integer = 25, STEPS As Integer = 5, BG_X As Integer = 279, BG_Y As Integer = 453
-
-		Dim fullW As Integer
-
-		fullW = 260 * number \ STEPS
-		SwinGame.DrawBitmap(_LoaderEmpty, BG_X, BG_Y)
-		SwinGame.DrawBitmapPart(_LoaderFull, 0, 0, fullW, 66, BG_X, BG_Y)
-
-		SwinGame.DrawTextLines(message, Color.White, Color.Transparent, _LoadingFont, FontAlignment.AlignCenter, TX, TY, TW, TH)
-
-        SwinGame.RefreshScreen()
-        SwinGame.ProcessEvents()
+    Public Sub AddSplash(ByVal row As Integer, ByVal col As Integer)
+        AddAnimation(row, col, "Splash")
     End Sub
 
-    Private Sub EndLoadingScreen(ByVal width As Integer, ByVal height As Integer)
-        SwinGame.ProcessEvents()
-        SwinGame.Delay(500)
-        SwinGame.ClearScreen()
-        SwinGame.RefreshScreen()
-        SwinGame.FreeFont(_LoadingFont)
-        SwinGame.FreeBitmap(_Background)
-        SwinGame.FreeBitmap(_Animation)
-        SwinGame.FreeBitmap(_LoaderEmpty)
-        SwinGame.FreeBitmap(_LoaderFull)
-        Audio.FreeSoundEffect(_StartSound)
-        SwinGame.ChangeScreenSize(width, height)
-    End Sub
+    Private _Animations As New List(Of Sprite)()
 
-    Private Sub NewFont(ByVal fontName As String, ByVal filename As String, ByVal size As Integer)
-        _Fonts.Add(fontName, SwinGame.LoadFont(SwinGame.PathToResource(filename, ResourceKind.FontResource), size))
-    End Sub
+    Private Sub AddAnimation(ByVal row As Integer, ByVal col As Integer, ByVal image As String)
+        Dim s As Sprite
+        Dim imgObj as Bitmap
 
-    Private Sub NewImage(ByVal imageName As String, ByVal filename As String)
-        _Images.Add(imageName, SwinGame.LoadBitmap(SwinGame.PathToResource(filename, ResourceKind.BitmapResource)))
-    End Sub
+        imgObj = GameImage(image)
+        imgObj.SetCellDetails(40, 40, 3, 3, 7)
 
-    Private Sub NewTransparentColorImage(ByVal imageName As String, ByVal fileName As String, ByVal transColor As Color)
-        _Images.Add(imageName, SwinGame.LoadBitmap(SwinGame.PathToResource(fileName, ResourceKind.BitmapResource), True, transColor))
-    End Sub
+        Dim animation as AnimationScript
+        animation = SwinGame.LoadAnimationScript("splash.txt")
 
-    Private Sub NewTransparentColourImage(ByVal imageName As String, ByVal fileName As String, ByVal transColor As Color)
-        NewTransparentColorImage(imageName, fileName, transColor)
-    End Sub
-
-    Private Sub NewSound(ByVal soundName As String, ByVal filename As String)
-        _Sounds.Add(soundName, Audio.LoadSoundEffect(SwinGame.PathToResource(filename, ResourceKind.SoundResource)))
-    End Sub
-
-    Private Sub NewMusic(ByVal musicName As String, ByVal filename As String)
-        _Music.Add(musicName, Audio.LoadMusic(SwinGame.PathToResource(filename, ResourceKind.SoundResource)))
-    End Sub
-
-    Private Sub FreeFonts()
-        Dim obj As Font
-        For Each obj In _Fonts.Values
-            SwinGame.FreeFont(obj)
-        Next
-    End Sub
-
-    Private Sub FreeImages()
-        Dim obj As Bitmap
-        For Each obj In _Images.Values
-            SwinGame.FreeBitmap(obj)
-        Next
-    End Sub
-
-    Private Sub FreeSounds()
-        Dim obj As SoundEffect
-        For Each obj In _Sounds.Values
-            Audio.FreeSoundEffect(obj)
-        Next
-    End Sub
-
-    Private Sub FreeMusic()
-        Dim obj As Music
-        For Each obj In _Music.Values
-            Audio.FreeMusic(obj)
-        Next
-    End Sub
-
-    Public Sub FreeResources()
-        FreeFonts()
-        FreeImages()
-        FreeMusic()
-        FreeSounds()
-		SwinGame.ProcessEvents()
-    End Sub
-End Module
+        s = SwinGame.CreateSprite(imgObj, animation)
+    
