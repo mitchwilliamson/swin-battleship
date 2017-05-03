@@ -13,17 +13,17 @@ public enum AIOption
 	/// <summary>
 	/// Easy, total random shooting
 	/// </summary>
-	easy,
+	Easy,
 
 	/// <summary>
 	/// Medium, marks squares around hits
 	/// </summary>
-	medium,
+	Medium,
 
 	/// <summary>
 	/// As medium, but removes shots once it misses
 	/// </summary>
-	hard,
+	Hard,
 }
 
 //=======================================================
