@@ -23,6 +23,7 @@ public static class GameController
 	private static Stack<GameState> _state = new Stack<GameState>();
 
 	private static AIOption _aiSetting;
+    public static bool IsQuickPlay { get; set; } = false;
 	/// <summary>
 	/// Returns the current state of the game, indicating which screen is
 	/// currently being used
@@ -127,7 +128,7 @@ public static class GameController
 	/// <param name="showAnimation">If set to <c>true</c>, show explosion animation.</param>
 	private static void PlayHitSequence(int row, int column, bool showAnimation)
 	{
-		if (showAnimation) {
+		if (showAnimation && !IsQuickPlay) {
 			UtilityFunctions.AddExplosion(row, column);
 		}
 
@@ -144,7 +145,7 @@ public static class GameController
 	/// <param name="showAnimation">If set to <c>true</c>, show splash animation.</param>
 	private static void PlayMissSequence(int row, int column, bool showAnimation)
 	{
-		if (showAnimation) {
+		if (showAnimation && !IsQuickPlay) {
 			UtilityFunctions.AddSplash(row, column);
 		}
 
@@ -182,7 +183,7 @@ public static class GameController
 				PlayHitSequence(result.Row, result.Column, isHuman);
 				Audio.PlaySoundEffect(GameResources.GameSound("Sink"));
 
-				while (Audio.SoundEffectPlaying(GameResources.GameSound("Sink"))) {
+				while (Audio.SoundEffectPlaying(GameResources.GameSound("Sink")) && !IsQuickPlay) {
 					SwinGame.Delay(10);
 					SwinGame.RefreshScreen();
 				}
@@ -389,4 +390,12 @@ public static class GameController
 		_aiSetting = setting;
 	}
 
+    /// <summary>
+    /// Toggle quick play mode
+    /// </summary>
+    public static void ToggleQuickPlay()
+    {
+        IsQuickPlay = !IsQuickPlay;
+        Console.WriteLine("Quick Play Mode: {0}", IsQuickPlay.ToString());
+    }
 }

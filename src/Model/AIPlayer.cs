@@ -128,6 +128,9 @@ public abstract class AIPlayer : Player
 	/// </summary>
 	private void Delay()
 	{
+        if (GameController.IsQuickPlay)
+            return;
+
 		int i = 0;
 		for (i = 0; i <= 150; i++) {
 			//Dont delay if window is closed
