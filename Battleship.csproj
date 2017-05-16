@@ -135,7 +135,11 @@
     <Compile Include="src\Model\ShipName.cs" />
     <Compile Include="src\Model\Tile.cs" />
     <Compile Include="src\Model\TileView.cs" />
+<<<<<<< HEAD
     <Compile Include="src\Model\AIMediumPlayer %28copy%29.cs" />
+=======
+    <Compile Include="src\PlayerScoreController.cs" />
+>>>>>>> c5726790d3540c9c85dd34c674c95326ec70524f
   </ItemGroup>
   <Target Name="CopyFiles">
     <Copy SourceFiles="@(MacLibraryFiles)" DestinationFolder="$(OutDir)" />
