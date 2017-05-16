@@ -96,8 +96,8 @@ public class AIEasyPlayer : AIPlayer
 	{
 		if (result.Value == ResultOfAttack.Hit) {
 			_CurrentState = AIStates.TargetingShip;
-			AddTarget(row - 4, col);
-			AddTarget(row, col - 4);
+			AddTarget(row - 3, col);
+			AddTarget(row, col - 3);
 
 		} else if (result.Value == ResultOfAttack.ShotAlready) {
 			throw new ApplicationException("Error in AI");
