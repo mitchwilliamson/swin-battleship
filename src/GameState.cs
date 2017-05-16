@@ -21,7 +21,7 @@ public enum GameState
 	/// <summary>
 	/// The player is viewing the game menu
 	/// </summary>
-	ViewingGameMenu,
+	ViewingGamekjadsbcihsdkcnjsdnkjsncajMenu,
 
 	/// <summary>
 	/// The player is looking at the high scores
