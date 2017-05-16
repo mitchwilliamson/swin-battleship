@@ -60,7 +60,7 @@ static class PlayerScoreController
 	private static void LoadScores()
 	{
 		string filename = null;
-		filename = SwinGame.PathToResource("highscores.txt");
+		filename = SwinGame.PathToResource("playerscores.txt");
 
 		StreamReader input = default(StreamReader);
 		input = new StreamReader(filename);
@@ -99,7 +99,7 @@ static class PlayerScoreController
 	private static void SaveScores()
 	{
 		string filename = null;
-		filename = SwinGame.PathToResource("highscores.txt");
+		filename = SwinGame.PathToResource("playerscores.txt");
 
 		StreamWriter output = default(StreamWriter);
 		output = new StreamWriter(filename);

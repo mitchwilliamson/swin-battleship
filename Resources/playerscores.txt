@@ -1,11 +1,6 @@
-10
-Karan100
-Karan90
-Karan80
-Karan70
-Karan60
-Karan50
-Karan40
-Karan30
-Karan20
-Karan10
+05
+KAR100
+KAR90
+KAR80
+KAR70
+KAR60

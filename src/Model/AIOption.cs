@@ -24,7 +24,9 @@ public enum AIOption
 	/// As medium, but removes shots once it misses
 	/// </summary>
 	Hard,
+
 }
+
 
 //=======================================================
 //Service provided by Telerik (www.telerik.com)

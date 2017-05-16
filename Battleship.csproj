@@ -135,6 +135,7 @@
     <Compile Include="src\Model\ShipName.cs" />
     <Compile Include="src\Model\Tile.cs" />
     <Compile Include="src\Model\TileView.cs" />
+    <Compile Include="src\Model\AIMediumPlayer %28copy%29.cs" />
   </ItemGroup>
   <Target Name="CopyFiles">
     <Copy SourceFiles="@(MacLibraryFiles)" DestinationFolder="$(OutDir)" />
