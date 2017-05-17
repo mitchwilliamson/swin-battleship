@@ -98,6 +98,8 @@ public class AIEasyPlayer : AIPlayer
 			_CurrentState = AIStates.TargetingShip;
 			AddTarget(row - 3, col);
 			AddTarget(row, col - 3);
+			AddTarget(row + 3, col);
+			AddTarget(row, col + 3);
 
 		} else if (result.Value == ResultOfAttack.ShotAlready) {
 			throw new ApplicationException("Error in AI");
